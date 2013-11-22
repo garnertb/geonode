@@ -121,7 +121,9 @@ def pre_save_document(instance, sender, **kwargs):
         instance.bbox_y0 = -90
         instance.bbox_y1 = 90
 
-    instance.update_thumbnail(save=False)
+def create_thumbnail(sender, instance, created, **kwargs):
+    if created:
+        instance.update_thumbnail(save=False)
 
 def update_documents_extent(sender, **kwargs):
     model = 'map' if isinstance(sender, Map) else 'layer'
@@ -131,5 +133,6 @@ def update_documents_extent(sender, **kwargs):
 
 
 signals.pre_save.connect(pre_save_document, sender=Document)
+signals.post_save.connect(create_thumbnail, sender=Document)
 signals.post_save.connect(resourcebase_post_save, sender=Document)
 map_changed_signal.connect(update_documents_extent)
