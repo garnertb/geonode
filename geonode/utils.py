@@ -630,7 +630,7 @@ def default_map_config():
     _default_map = GXPMap(
         title=DEFAULT_TITLE,
         abstract=DEFAULT_ABSTRACT,
-        projection="EPSG:900913",
+        projection="EPSG:3857",
         center_x=_DEFAULT_MAP_CENTER[0],
         center_y=_DEFAULT_MAP_CENTER[1],
         zoom=settings.DEFAULT_MAP_ZOOM
