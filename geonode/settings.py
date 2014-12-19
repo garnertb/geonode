@@ -774,8 +774,10 @@ LAYER_PREVIEW_LIBRARY = 'geoext'
 
 SERVICE_UPDATE_INTERVAL = 0
 
-BROKER_URL = "django://"
+# Queue non-blocking notifications.
+NOTIFICATION_QUEUE_ALL = False
 
+BROKER_URL = "django://"
 CELERY_ALWAYS_EAGER = True
 CELERY_IGNORE_RESULT = True
 CELERY_SEND_EVENTS = False
@@ -789,7 +791,8 @@ CELERY_DEFAULT_ROUTING_KEY = "default"
 CELERY_CREATE_MISSING_QUEUES = True
 CELERY_IMPORTS = (
     'geonode.tasks.deletion',
-    'geonode.tasks.update'
+    'geonode.tasks.update',
+    'geonode.tasks.email'
 )
 
 

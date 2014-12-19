@@ -1,13 +1,20 @@
 from celery.task import task
-from geonode.people.models import Profile
+from celery.utils.log import get_task_logger
 
-@task(name='geonode.tasks.email.send_notification', queue='email')
-def send_notification(recipients_ids, notice_type_label):
+logger = get_task_logger(__name__)
+
+@task(name='geonode.tasks.email.send_queued_notifications', queue='email')
+def send_queued_notifications(*args):
+    """
+    Sends queued notifications.
+
+    settings.NOTIFICATION_QUEUE_ALL needs to be true in order to take advantage of this.
+    """
+
     try:
-        from notification import models as notification
-        from notification.models import NoticeSetting
+        from notification.engine import send_all
     except ImportError:
         return
 
-    recipients = Profile.objects.filter(id__in=recipients_ids)
-    notification.send(recipients, notice_type_label, {"instance": instance})
+    logger.debug('Sending queued notifications.')
+    send_all(*args)
