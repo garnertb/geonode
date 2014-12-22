@@ -2,6 +2,7 @@ from geonode.layers.models import Layer
 from geonode.maps.models import Map
 from celery.task import task
 
+
 @task(name='geonode.tasks.deletion.delete_layer', queue='cleanup')
 def delete_layer(object_id):
     """

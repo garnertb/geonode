@@ -33,6 +33,7 @@ from geonode.people.forms import ProfileForm
 from geonode.people.forms import ForgotUsernameForm
 from geonode.tasks.email import send_email
 
+
 @login_required
 def profile_edit(request, username=None):
     if username is None:

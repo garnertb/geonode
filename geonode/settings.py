@@ -20,7 +20,7 @@
 
 # Django settings for the GeoNode project.
 import os
-from kombu import Exchange, Queue
+from kombu import Queue
 
 #
 # General Django development settings
@@ -825,4 +825,3 @@ if 'geonode.geoserver' in INSTALLED_APPS:
 
 import djcelery
 djcelery.setup_loader()
-

@@ -233,8 +233,7 @@ def map_remove(request, mapid, template='maps/map_remove.html'):
         }))
 
     elif request.method == 'POST':
-        map_remove.delay(object_id=map_obj.id)
-
+        delete_map.delay(object_id=map_obj.id)
         return HttpResponseRedirect(reverse("maps_browse"))
 
 
