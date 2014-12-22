@@ -18,6 +18,8 @@
 #########################################################################
 
 import os
+from .celery import app as celery_app
+
 __version__ = (2, 4, 0, 'alpha', 0)
 
 

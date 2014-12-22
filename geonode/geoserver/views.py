@@ -26,7 +26,7 @@ from geonode.tasks.update import geoserver_update_layers
 from geonode.utils import json_response, _get_basic_auth_info
 from geoserver.catalog import FailedRequestError, ConflictingDataError
 from lxml import etree
-from .helpers import get_stores, gs_slurp, ogc_server_settings, set_styles, style_update
+from .helpers import get_stores, ogc_server_settings, set_styles, style_update
 
 logger = logging.getLogger(__name__)
 
@@ -48,12 +48,10 @@ def updatelayers(request):
     workspace = params.get('workspace', None)
     store = params.get('store', None)
     filter = params.get('filter', None)
-    result = geoserver_update_layers.delay(ignore_errors=False, owner=owner, workspace=workspace,
-                                           store=store, filter=filter)
+    geoserver_update_layers.delay(ignore_errors=False, owner=owner, workspace=workspace,
+                                  store=store, filter=filter)
 
-    # return the celery success view
-    return HttpResponse(json.dumps({'task': result.task_id, 'status': result.status}),
-                        content_type='application/json')
+    return HttpResponseRedirect(reverse('layer_browse'))
 
 
 @login_required
