@@ -107,6 +107,29 @@ class Document(ResourceBase):
         img.save(imgfile, format='PNG')
         return imgfile.getvalue()
 
+    def create_thumbnail(self):
+
+        if self.has_thumbnail():
+            self.thumbnail_set.get().thumb_file.delete()
+        else:
+            self.thumbnail_set.add(Thumbnail())
+
+        image = self._render_thumbnail()
+
+        self.thumbnail_set.get().thumb_file.save('doc-%s-thumb.png' % self.id, ContentFile(image))
+        self.thumbnail_set.get().thumb_spec = 'Rendered'
+        self.thumbnail_set.get().save()
+
+        Link.objects.get_or_create(resource=self.get_self_resource(),
+                                   url=self.thumbnail_set.get().thumb_file.url,
+                                   defaults=dict(name='Thumbnail',
+                                                 extension='png',
+                                                 mime='image/png',
+                                                 link_type='image',))
+
+        self.thumbnail_url = self.get_thumbnail_url()
+        self.save()
+
     @property
     def class_name(self):
         return self.__class__.__name__
@@ -168,30 +191,12 @@ def pre_save_document(instance, sender, **kwargs):
 
 
 def create_thumbnail(sender, instance, created, **kwargs):
+    from geonode.tasks.update import create_document_thumbnail
+
     if not created:
         return
 
-    if instance.has_thumbnail():
-        instance.thumbnail_set.get().thumb_file.delete()
-    else:
-        instance.thumbnail_set.add(Thumbnail())
-
-    image = instance._render_thumbnail()
-
-    instance.thumbnail_set.get().thumb_file.save(
-        'doc-%s-thumb.png' %
-        instance.id,
-        ContentFile(image))
-    instance.thumbnail_set.get().thumb_spec = 'Rendered'
-    instance.thumbnail_set.get().save()
-    Link.objects.get_or_create(
-        resource=instance.get_self_resource(),
-        url=instance.thumbnail_set.get().thumb_file.url,
-        defaults=dict(
-            name=('Thumbnail'),
-            extension='png',
-            mime='image/png',
-            link_type='image',))
+    create_document_thumbnail.delay(object_id=instance.id)
 
 
 def update_documents_extent(sender, **kwargs):
