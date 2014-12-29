@@ -218,8 +218,8 @@ def geoserver_post_save(instance, sender, **kwargs):
                                        )
                                        )
 
-        if gs_resource.store.type.lower() == 'geogit':
-            repo_url = '{url}geogit/{workspace}:{store}'.format(
+        if gs_resource.store.type.lower() == 'geogig':
+            repo_url = '{url}geogig/{workspace}:{store}'.format(
                 url=ogc_server_settings.public_url,
                 workspace=instance.workspace,
                 store=instance.store)
@@ -232,7 +232,7 @@ def geoserver_post_save(instance, sender, **kwargs):
             Link.objects.get_or_create(resource=instance.resourcebase_ptr,
                                        url=repo_url,
                                        defaults=dict(extension='html',
-                                                     name='Clone in GeoGit',
+                                                     name='Clone in GeoGig',
                                                      mime='text/xml',
                                                      link_type='html'
                                                      )
@@ -246,7 +246,7 @@ def geoserver_post_save(instance, sender, **kwargs):
             Link.objects.get_or_create(resource=instance.resourcebase_ptr,
                                        url=command_url('log'),
                                        defaults=dict(extension='json',
-                                                     name='GeoGit log',
+                                                     name='GeoGig log',
                                                      mime='application/json',
                                                      link_type='html'
                                                      )
@@ -255,7 +255,7 @@ def geoserver_post_save(instance, sender, **kwargs):
             Link.objects.get_or_create(resource=instance.resourcebase_ptr,
                                        url=command_url('statistics'),
                                        defaults=dict(extension='json',
-                                                     name='GeoGit statistics',
+                                                     name='GeoGig statistics',
                                                      mime='application/json',
                                                      link_type='html'
                                                      )
